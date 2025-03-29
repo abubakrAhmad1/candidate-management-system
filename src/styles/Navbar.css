@@ -1,0 +1,25 @@
+.main {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+    height: 100px;
+    padding: 2%;
+    background-color: rgb(231, 227, 222);
+}
+
+.opt {
+    width: 30%;
+    height: 70%;
+    background-color: rgb(128, 129, 129);
+    border-radius: 20px;
+    margin:5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.opt a {
+    text-decoration: none;
+    font-weight: bolder;
+    color: black;
+}
