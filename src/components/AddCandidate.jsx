@@ -1,68 +1,90 @@
 import React, { useRef, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
+import { storeData } from "../redux/slices/DataSlice";
 import Skill from "./Skill";
 
 export default function Home() {
-  const [image, setImage] = useState(null);//remain same
-  const [skills, setSkills] = useState([]);//remain same
-  const [addSkill, setAddSkill] = useState(false);//remain same
-  const inputRef = useRef(null);//remain same
+  const [image, setImage] = useState(null);
+  const [skills, setSkills] = useState([]);
+  const [addSkill, setAddSkill] = useState(false);
+  const inputRef = useRef(null);
+  const nameRef = useRef(null); // Ref for name input
+  const positionRef = useRef(null); // Ref for position select
+  const dispatch = useDispatch();
 
   const changeFunc = (text) => {
-    let arr = [...skills];
-    arr.push(text);
-    setSkills(arr);
+    setSkills([...skills, text]);
   };
 
   const removeFunc = (text) => {
-    let arr = [...skills];
-    arr = arr.filter((skill) => skill != text);
-    setSkills(arr);
+    setSkills(skills.filter((skill) => skill !== text));
   };
-// this will remain same
-  const addNewSKill = () => {
-    let arr = [...skills];
-    arr.push(inputRef.current.value);
-    setSkills(arr);
-    setAddSkill(false);
+
+  const addNewSkill = () => {
+    if (inputRef.current.value.trim() !== "") {
+      setSkills([...skills, inputRef.current.value]);
+      setAddSkill(false);
+      inputRef.current.value = ""; // Clear input after adding
+    }
   };
-//this will alse remain same
+
   const handleImageChange = (event) => {
-    const file = event.target.files[0]; // Get the selected file
+    const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImage(reader.result); // Set the preview image
+        setImage(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
+  // Function to handle form submission
+  const handleSubmit = (event) => {
+    event.preventDefault(); // Prevent default form submission
+
+    const studentData = {
+      name: nameRef.current.value,
+      position: positionRef.current.value,
+      skills: skills,
+      image: image,
+    };
+
+    // Dispatch the data to Redux store
+    dispatch(storeData(studentData));
+
+    // Reset form fields after submission
+    nameRef.current.value = "";
+    positionRef.current.value = "Select Position";
+    setSkills([]);
+    setImage(null);
+  };
+
   return (
-    <form>
+    <form onSubmit={handleSubmit}>
       <fieldset>
         <legend>Add New Candidate</legend>
 
         {/* CANDIDATE NAME */}
         <div className="candidateName">
-          <label for="name">Caniddate Name</label>
-          <input type="text" id="name" required></input>
+          <label htmlFor="name">Candidate Name</label>
+          <input type="text" id="name" ref={nameRef} required />
         </div>
 
-        {/* POSITON APPLIED FOR */}
+        {/* POSITION APPLIED FOR */}
         <div className="candidatePosition">
-          <label for="position">Applied For : </label>
-          <select id="position" required>
-            <option selected>Select Position</option>
-            <option value="frontEnd">Front End Developer</option>
-            <option value="backEnd">Back End Developer</option>
-            <option value="DataScience">Data Science</option>
+          <label htmlFor="position">Applied For:</label>
+          <select id="position" ref={positionRef} required>
+            <option value="Select Position">Select Position</option>
+            <option value="Front End Developer">Front End Developer</option>
+            <option value="Back End Developer">Back End Developer</option>
+            <option value="Data Science">Data Science</option>
           </select>
         </div>
 
         {/* PROFILE PICTURE */}
         <div className="CandidatePicture">
-          <input type="file" accept="image/*" onChange={handleImageChange}  required/>
+          <input type="file" accept="image/*" onChange={handleImageChange} required />
           <div
             style={{
               width: "200px",
@@ -75,11 +97,7 @@ export default function Home() {
             }}
           >
             {image ? (
-              <img
-                src={image}
-                alt="Preview"
-                style={{ maxHeight: "100%", maxWidth: "100%" }}
-              />
+              <img src={image} alt="Preview" style={{ maxHeight: "100%", maxWidth: "100%" }} />
             ) : (
               <span style={{ color: "#aaa" }}>No Image</span>
             )}
@@ -87,19 +105,17 @@ export default function Home() {
         </div>
 
         {/* ADD SKILLS */}
-        <button onClick={() => setAddSkill(true)}>Add Skill</button>
+        <button type="button" onClick={() => setAddSkill(true)}>Add Skill</button>
 
-        {addSkill ? (
+        {addSkill && (
           <div>
             <input type="text" ref={inputRef} required />
-            <button onClick={addNewSKill}> OK </button>
+            <button type="button" onClick={addNewSkill}>OK</button>
           </div>
-        ) : (
-          <div></div>
         )}
 
         {skills.map((skill, index) => (
-          <Skill msg={skill} removeFunc={removeFunc} />
+          <Skill key={index} msg={skill} removeFunc={removeFunc} />
         ))}
 
         {/* SUBMIT BUTTON */}

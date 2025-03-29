@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const DataSlice = createSlice({
-  name: "DataSlice",
+  name: "Data",
   initialState: [], 
   reducers: {
     storeData: (state, action) => {
