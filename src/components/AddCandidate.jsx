@@ -1,11 +1,12 @@
 import React, { useRef, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Skill from "./Skill";
 
 export default function Home() {
-  const [image, setImage] = useState(null);
-  const [skills, setSkills] = useState([]);
-  const [addSkill, setAddSkill] = useState(false);
-  const inputRef = useRef(null);
+  const [image, setImage] = useState(null);//remain same
+  const [skills, setSkills] = useState([]);//remain same
+  const [addSkill, setAddSkill] = useState(false);//remain same
+  const inputRef = useRef(null);//remain same
 
   const changeFunc = (text) => {
     let arr = [...skills];
@@ -18,14 +19,14 @@ export default function Home() {
     arr = arr.filter((skill) => skill != text);
     setSkills(arr);
   };
-
+// this will remain same
   const addNewSKill = () => {
     let arr = [...skills];
     arr.push(inputRef.current.value);
     setSkills(arr);
     setAddSkill(false);
   };
-
+//this will alse remain same
   const handleImageChange = (event) => {
     const file = event.target.files[0]; // Get the selected file
     if (file) {
