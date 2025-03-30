@@ -36,6 +36,7 @@ export default function About() {
           {elem.skills.map((skill, idx) => (
             <div key={idx}>{skill}</div>
           ))}
+          <img src={elem.image} alt="Preview" style={{ maxHeight: "100%", maxWidth: "100%" }} />
         </div>
       ))}
     </div>
